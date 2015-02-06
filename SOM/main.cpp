@@ -263,7 +263,7 @@ int main()
 
 	int msize = 4;
 
-	som->create(msize, msize, msize, msize, 1000);
+	som->create(msize, msize, msize, msize, 10000);
 
 	int count = 0;
 
