@@ -72,7 +72,16 @@ public:
 	int map_x, map_y;
 	int qtd_neuronios;
 
-	Som():cell_width(0), cell_height(0), winning_node(NULL), iteraction_count(1), num_iteractions(0), time_constant(0), map_radius(0), influence(0), learning_rate(constStartLearningRate), done(false)
+	Som():cell_width(0), 
+		cell_height(0), 
+		winning_node(NULL), 
+		iteraction_count(1), 
+		num_iteractions(0), 
+		time_constant(0), 
+		map_radius(0), 
+		influence(0), 
+		learning_rate(constStartLearningRate), 
+		done(false)
 	{
 	}
 
@@ -97,7 +106,7 @@ public:
 					(j+1) * cell_width,	 //right
 					i * cell_height,	 //top
 					(i+1) * cell_height, //bottom
-					3) //num weights
+					2) //num weights
 					);
 
 				//id_node++;
@@ -143,10 +152,10 @@ public:
 			{
 				//calculate the Euclidean distance (squared) to this node from the
 				//BMU
-				float dist_to_node_sq = (winning_node->x - SOM[n].x) *
-										(winning_node->x - SOM[n].x) +
-										(winning_node->y - SOM[n].y) *
-										(winning_node->y - SOM[n].y);
+				float dist_to_node_sq = (winning_node->x - SOM[n].X()) *
+										(winning_node->x - SOM[n].X()) +
+										(winning_node->y - SOM[n].Y()) *
+										(winning_node->y - SOM[n].Y());
 
 				float width_sq = neighbourhood_radius * neighbourhood_radius;
 
@@ -186,7 +195,7 @@ public:
 
 			winning_node = find_best_matching_node(data[this_vector]);
 
-			result.push_back(winning_node->id);
+//			result.push_back(winning_node->id);
 		}
 	}
 

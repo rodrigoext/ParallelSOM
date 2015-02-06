@@ -218,8 +218,16 @@ void show_clustered(vector<vector<float>> data, vector<int> clustering, int num_
 int main()
 {
 	
+	/*
+	
+	-- No final obter os pesos dos neurônios que seriam as posições deles no mapa, e não x e y como eu estava pensando.
+
+	-- A rede esta com o tereinamento muito rápido e tenho que ver melhor o por que disso.
+	
+	*/
+
 	//Carrega dados
-	vector<vector<float>> data_set = read_data("data_seis.csv");
+	vector<vector<float>> data_set = read_data("data_simple.csv");
 
 	//cout << data_set.pop_back.pop_back() << endl;
 
@@ -253,7 +261,9 @@ int main()
 
 	//show_clustered(data_set_test, result, 3, 0);
 
-	som->create(5, 5, 5, 5, 100);
+	int msize = 4;
+
+	som->create(msize, msize, msize, msize, 1000);
 
 	int count = 0;
 
@@ -263,20 +273,28 @@ int main()
 		count ++;
 	}
 		
-	ofstream myfile;
-	myfile.open ("data_seis_result.txt");
+	//ofstream resultado_final;
+	ofstream pesos_neuronios;
+	//resultado_final.open ("data_seis_result.txt");
+	pesos_neuronios.open("pesos_neuronios.csv");
+	
+	//som->calculate_result_bmu(data_set);
 
-	som->calculate_result_bmu(data_set);
+	//reverse(som->result.begin(),som->result.end());
 
-	reverse(som->result.begin(),som->result.end());
-
-	for(int i = 0; i < data_set.size(); ++i)
+	for (int i = 0; i < msize*msize; ++i)
 	{
-		myfile << som->result.back() << endl;
+		pesos_neuronios << som->SOM[i].pesoX() << "," << som->SOM[i].pesoY() << endl;
+	}
+
+	/*for(int i = 0; i < data_set.size(); ++i)
+	{
+		resultado_final << som->result.back() << endl;
 		som->result.pop_back();
 	}
 		
-	myfile.close();
+	resultado_final.close();*/
+	pesos_neuronios.close();
 
 	cout << "Num: " << count << endl;
 

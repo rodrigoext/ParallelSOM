@@ -26,7 +26,7 @@ public:
 
 	float x,y;
 	int count_wins;
-	int id;
+
 
 	Node(int Left, int Right, int Top, int Bottom, int num_weights):left(Left), right(Right), top(Top), bottom(Bottom)
 	{
@@ -51,7 +51,8 @@ public:
 			distance += (input_vector[i] - weights[i]) * (input_vector[i] - weights[i]);
 		}
 
-		return sqrt(distance);
+		//return sqrt(distance);
+		return distance;
 	}
 
 	void adjust_weights(const vector<float> &target, const float learning_rate, const float influence)
@@ -67,6 +68,27 @@ public:
 		count_wins = count_wins + 1;
 	}
 	
+	float X()
+	{
+		//return weights[0];
+		return x;
+	}
+
+	float Y()
+	{
+		//return weights[1];
+		return y;
+	}
+
+	float pesoX()
+	{
+		return weights[0];
+	}
+
+	float pesoY()
+	{
+		return weights[1];
+	}
 
 };
 
