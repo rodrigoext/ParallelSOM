@@ -199,6 +199,11 @@ public:
 		}
 	}
 
+	float get_learning_rate()
+	{
+		return this->learning_rate;
+	}
+
 
 };
 

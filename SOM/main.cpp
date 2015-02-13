@@ -20,6 +20,66 @@ using std::ifstream;
 using namespace std;
 using namespace Eigen;
 
+
+MatrixXf read_data_eigen(const char * file_name)
+{
+	vector<vector<string>> data;
+	MatrixXf data_float;
+
+	ifstream infile;
+
+	infile.open(file_name);
+
+	cerr << "Reading data..." << endl;
+
+	if (infile.is_open())
+	{
+
+		int lines = std::count(std::istreambuf_iterator<char>(infile),
+								std:: istreambuf_iterator<char>(), '\n');
+
+		while (infile)
+		{
+			string s;
+
+			if (!getline(infile, s))
+				break;
+
+			istringstream ss(s);
+
+			vector<float> record;
+
+			Eigen::VectorXf rec;
+
+			int cols = 0;
+
+			while (ss)
+			{
+				string s2;
+				if (!getline(ss, s2, ','))
+					break;
+
+				float temp = 0.0f;
+
+				istringstream iss(s2);
+
+				iss >> temp;
+
+				record.push_back(temp);
+
+//				data_float()
+
+	//			cols += 1;
+			}
+
+			lines += 1;
+		}
+	}
+
+	return data_float;
+}
+
+
 vector<vector<float>> read_data(const char * file_name)
 {
 	vector<vector<string>> data;
@@ -228,6 +288,8 @@ int main()
 
 	//Carrega dados
 	vector<vector<float>> data_set = read_data("data_simple.csv");
+	Eigen::MatrixXf data_set_eigen = read_data_eigen("data_simple.csv");
+	
 
 	//cout << data_set.pop_back.pop_back() << endl;
 
@@ -261,11 +323,13 @@ int main()
 
 	//show_clustered(data_set_test, result, 3, 0);
 
-	int msize = 4;
+	int msize = 10;
 
-	som->create(msize, msize, msize, msize, 10000);
+	som->create(msize, msize, msize, msize, 1000);
 
 	int count = 0;
+
+	cerr << "Training..." << endl;
 
 	while (!som->finished_training())
 	{
@@ -296,7 +360,10 @@ int main()
 	resultado_final.close();*/
 	pesos_neuronios.close();
 
-	cout << "Num: " << count << endl;
+	cout << "Num Iterations: " << count << endl;
+	//cout << "Map Radius: " << som->map_radius << endl;
+	cout << "Learning Rate: " << som->get_learning_rate() << endl;
+
 
 	system("pause");
 
