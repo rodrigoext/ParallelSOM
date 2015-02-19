@@ -66,6 +66,29 @@ inline float dist(vector<float> tuple, vector<float> mean)
 	return sqrtf(sumSquaredDiffs);
 }
 
+void mapminmax(vector<vector<float>> &data)
+{
+	float min = 0.0f;
+	float max = 0.0f;
+
+	float scale_range = 1.0f - (-1.0f);
+
+	for (int i = 0; i < data.size(); ++i)
+	{
+		min = *min_element(data[i].begin(), data[i].end());
+		max = *max_element(data[i].begin(), data[i].end());
+
+		float value_range = max - min;
+
+		for (int j = 0; j < data[i].size(); ++j)
+		{
+			//data[i][j] = (data[i][j] - min) / (max - min);
+			//data[i][j] = (((scale_range * (data[i][j] - min)) / value_range));
+			data[i][j] = (data[i][j] - min) / value_range * scale_range + (-1.0f);
+		}
+	}
+}
+
 
 
 #endif

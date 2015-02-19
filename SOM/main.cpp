@@ -13,6 +13,7 @@
 #include "som.h"
 #include "node_hex.h"
 #include "kmeans.h"
+#include "utils.h"
 
 using std::cout;
 using std::endl;
@@ -248,6 +249,7 @@ vector<vector<float>> read_data_test()
 	return data;
 }
 
+
 void show_clustered(vector<vector<float>> data, vector<int> clustering, int num_clusters, int decimals)
 {
 	for (int k = 0; k < num_clusters; ++k)
@@ -287,9 +289,25 @@ int main()
 	*/
 
 	//Carrega dados
-	vector<vector<float>> data_set = read_data("data_simple.csv");
-	Eigen::MatrixXf data_set_eigen = read_data_eigen("data_simple.csv");
+	vector<vector<float>> data_set = read_data("data_simple_pure.csv");
+	//Eigen::MatrixXf data_set_eigen = read_data_eigen("data_simple.csv");
 	
+
+	mapminmax(data_set);
+
+	ofstream d_write;
+	d_write.open("data_set_norm_cplusplus.csv");
+	for (int i = 0; i < data_set.size(); ++i)
+	{
+		for (int j = 0; j < data_set[i].size(); ++j)
+		{
+			d_write << data_set[i][j] << ",";
+		}
+		d_write << endl;
+		
+	}
+
+	d_write.close();
 
 	//cout << data_set.pop_back.pop_back() << endl;
 
