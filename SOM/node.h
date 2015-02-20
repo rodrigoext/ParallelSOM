@@ -90,6 +90,11 @@ public:
 		return weights[1];
 	}
 
+	vector<float> get_weigths()
+	{
+		return weights;
+	}
+
 };
 
 #endif /* NODE_H_ */

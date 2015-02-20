@@ -289,19 +289,26 @@ int main()
 	*/
 
 	//Carrega dados
-	vector<vector<float>> data_set = read_data("data_simple_pure.csv");
-	//Eigen::MatrixXf data_set_eigen = read_data_eigen("data_simple.csv");
-	
 
+	//vector<vector<float>> data_set = read_data("data_simple_class_pure.csv");
+	vector<vector<float>> data_set = read_data("data_seis.csv");
 	mapminmax(data_set);
 
+	data_set = transpose(data_set);
+
+	//vector<vector<float>> data_set_matlab = read_data("data_seis_norm.csv");
+	//Eigen::MatrixXf data_set_eigen = read_data_eigen("data_simple.csv");
+	
 	ofstream d_write;
 	d_write.open("data_set_norm_cplusplus.csv");
 	for (int i = 0; i < data_set.size(); ++i)
 	{
 		for (int j = 0; j < data_set[i].size(); ++j)
 		{
-			d_write << data_set[i][j] << ",";
+			if (j == (data_set[i].size() - 1))
+				d_write << data_set[i][j];
+			else
+				d_write << data_set[i][j] << ",";
 		}
 		d_write << endl;
 		
@@ -341,9 +348,9 @@ int main()
 
 	//show_clustered(data_set_test, result, 3, 0);
 
-	int msize = 10;
+	int msize = 4;
 
-	som->create(msize, msize, msize, msize, 1000);
+	som->create(msize, msize, msize, msize, 1000, data_set[0].size());
 
 	int count = 0;
 
@@ -366,7 +373,17 @@ int main()
 
 	for (int i = 0; i < msize*msize; ++i)
 	{
-		pesos_neuronios << som->SOM[i].pesoX() << "," << som->SOM[i].pesoY() << endl;
+		vector<float> weigths = som->SOM[i].get_weigths();
+
+		for (int j = 0; j < weigths.size(); ++j)
+		{
+			if (j == (weigths.size() - 1))
+				pesos_neuronios << weigths[j];
+			else
+				pesos_neuronios << weigths[j] << ",";
+		}
+
+		pesos_neuronios << endl;
 	}
 
 	/*for(int i = 0; i < data_set.size(); ++i)
@@ -383,7 +400,30 @@ int main()
 	cout << "Learning Rate: " << som->get_learning_rate() << endl;
 
 
-	system("pause");
+	//Imprime Hits
+	ofstream hits;
+	hits.open("hits.csv");
+
+	vector<Node> neurons = som->SOM;
+
+	int temp = 0;
+
+	for (int i = 0; i < msize; ++i)
+	{
+		for (int j = 0; j < msize; ++j)
+		{
+			if (j == (msize - 1))
+				hits << neurons[temp].count_wins;
+			else
+				hits << neurons[temp].count_wins << ",";
+
+			temp++;
+		}
+		
+		hits << endl;
+	}
+
+	//system("pause");
 
     return 0;
 }

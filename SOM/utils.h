@@ -89,6 +89,21 @@ void mapminmax(vector<vector<float>> &data)
 	}
 }
 
+vector<vector<float>> transpose(vector<vector<float>> &data)
+{
+	vector<vector<float>> new_data(data[0].size(),vector<float>(data.size()));
+
+	for (int i = 0; i < data.size(); ++i)
+	{
+		for (int j = 0; j < data[i].size(); ++j)
+		{
+			new_data[j][i] = data[i][j];
+		}
+	}
+
+	return new_data;
+}
+
 
 
 #endif

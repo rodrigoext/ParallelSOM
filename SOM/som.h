@@ -85,7 +85,7 @@ public:
 	{
 	}
 
-	void create(int Width, int Height, int cells_up, int cells_across, int Num_iteractions)
+	void create(int Width, int Height, int cells_up, int cells_across, int Num_iteractions, int dimension)
 	{
 		cell_width = (float)Width / (float)cells_across;
 		cell_height = (float)Height / (float)cells_up;
@@ -106,7 +106,7 @@ public:
 					(j+1) * cell_width,	 //right
 					i * cell_height,	 //top
 					(i+1) * cell_height, //bottom
-					2) //num weights
+					dimension) //num weights
 					);
 
 				//id_node++;
