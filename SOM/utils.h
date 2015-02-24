@@ -9,8 +9,9 @@
 #include <vector>
 #include <random>
 
-using namespace std;
+#include "node.h"
 
+using namespace std;
 //----------------------------------------------------------------------------
 //	some random number functions.
 //----------------------------------------------------------------------------
@@ -104,6 +105,50 @@ vector<vector<float>> transpose(vector<vector<float>> &data)
 	return new_data;
 }
 
+bool is_par(int num)
+{
+	if (num % 2 == 0)
+		return true;
+	return false;
+}
 
+float get_distance(const vector<float> &vec1, const vector<float> &vec2)
+{
+	float distance = 0;
 
+	for (int i = 0; i < vec2.size(); i++)
+	{
+		distance += (vec1[i] - vec2[i]) * (vec2[i] - vec2[i]);
+	}
+
+	//return sqrt(distance);
+	return distance;
+}
+
+vector<vector<float>> get_vizinhos(int x, int y, const vector<vector<vector<float>>> &neurons)
+{
+	vector<vector<float>> vizinhos;
+
+	if (x == 0 && y == 0)
+	{
+		vizinhos.push_back(neurons[x][y+1]);
+		vizinhos.push_back(neurons[x+1][y]);
+		vizinhos.push_back(neurons[x][neurons.size() - 1]);
+		vizinhos.push_back(neurons[neurons.size() -1][y]);
+	}
+
+	for (int i = 0; i < neurons.size(); ++i)
+	{
+		for (int j = 0; j < neurons[0].size(); ++j)
+		{
+			if (i == 0)
+			{
+
+			}
+		}
+	}
+
+	return vizinhos;
+
+}
 #endif

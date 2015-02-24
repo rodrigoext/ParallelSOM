@@ -71,6 +71,7 @@ public:
 
 	int map_x, map_y;
 	int qtd_neuronios;
+	int dimension_neurons;
 
 	Som():cell_width(0), 
 		cell_height(0), 
@@ -90,9 +91,13 @@ public:
 		cell_width = (float)Width / (float)cells_across;
 		cell_height = (float)Height / (float)cells_up;
 
-		num_iteractions = Num_iteractions;
+		map_x = Width;
+		map_y = Height;
 
-		//int id_node = 1;
+		num_iteractions = Num_iteractions;
+		dimension_neurons = dimension;
+
+		int id_node = 1;
 		//create all nodes
 		for (int i = 0; i < cells_up; i++)
 		{
@@ -106,10 +111,11 @@ public:
 					(j+1) * cell_width,	 //right
 					i * cell_height,	 //top
 					(i+1) * cell_height, //bottom
-					dimension) //num weights
+					dimension, //dimension of weights
+					id_node) //id of nodes
 					);
 
-				//id_node++;
+				id_node++;
 			}
 		}
 
@@ -202,6 +208,78 @@ public:
 	float get_learning_rate()
 	{
 		return this->learning_rate;
+	}
+
+	vector<int> get_umat_simples(vector<vector<float>> &data)
+	{
+
+		vector<int> umat;
+
+		for (int i = 0; i < data.size(); ++i)
+		{
+			winning_node = find_best_matching_node(data[i]);
+			umat.push_back(winning_node->id);
+		}
+
+		return umat;
+		
+	}
+
+	vector<float> get_umat(vector<vector<float>> &data)
+	{
+		vector<float> um;
+		vector<vector<vector<float>>> neurons(map_x, vector<vector<float>>(map_y, vector<float>(dimension_neurons)));
+
+		int count = 0;
+
+		for (int i = 0; i < map_x; ++i)
+		{
+			for (int j = 0; j < map_y; j++)
+			{
+				neurons[i][j] = SOM[count].get_weigths();
+				count++;
+			}
+		}
+
+		int X = 2 * map_x - 1;
+		int Y = 2 * map_y - 1;
+
+		for (int i = 0; i < X; ++i)
+		{
+			for (int j = 0; j < Y; ++j)
+			{
+				if (is_par(i))
+				{
+					if (is_par(j))
+					{
+
+						float du = 0.0f;
+					}
+					else
+					{
+						float dy = get_distance(neurons[i][j], neurons[i][j + 1]);
+						um.push_back(dy);
+					}
+
+				}
+				else
+				{
+					if (is_par(j))
+					{
+						float dx = get_distance(neurons[i][j], neurons[i + 1][j]);
+						um.push_back(dx);
+					}
+					else
+					{
+						float dxy = (1 / 2 * sqrt(2))*(get_distance(neurons[i][j], neurons[i + 1][j + 1]) + 
+														get_distance(neurons[i][j + 1], neurons[i + 1][j]));
+						um.push_back(dxy);
+					}
+				}
+			}
+		}
+
+		return um;
 	}
 
 

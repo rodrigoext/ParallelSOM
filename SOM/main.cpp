@@ -423,7 +423,24 @@ int main()
 		hits << endl;
 	}
 
+	hits.close();
+	
+
+	//Classsssssssssssss
+	ofstream cl;
+	cl.open("class.csv");
+
+	vector<int> cla = som->get_umat_simples(data_set);
+
+	for (int i = 0; i < cla.size(); ++i)
+	{
+		cl << cla[i] << endl;
+	}
+
+	cl.close();
 	//system("pause");
+
+	vector<float> umm = som->get_umat(data_set);
 
     return 0;
 }

@@ -26,9 +26,10 @@ public:
 
 	float x,y;
 	int count_wins;
+	int id;
 
 
-	Node(int Left, int Right, int Top, int Bottom, int num_weights):left(Left), right(Right), top(Top), bottom(Bottom)
+	Node(int Left, int Right, int Top, int Bottom, int num_weights, int Id) :left(Left), right(Right), top(Top), bottom(Bottom), id(Id)
 	{
 		for(int w = 0; w < num_weights; w++)
 		{
