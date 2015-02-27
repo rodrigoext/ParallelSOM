@@ -337,7 +337,7 @@ int main()
 
 	//vector<vector<float>> data_set_test = read_data_test();
 
-	Som* som = new Som();
+ 	Som* som = new Som();
 	
 
 	//KMeans* km = new KMeans();
@@ -440,7 +440,19 @@ int main()
 	cl.close();
 	//system("pause");
 
-	vector<float> umm = som->get_umat(data_set);
+	
+
+	ofstream umat;
+	umat.open("umat.csv");
+
+	vector<float> umm = som->get_umat();
+
+	for (int i = 0; i < umm.size(); ++i)
+	{
+		umat << umm[i] << endl;
+	}
+
+	umat.close();
 
     return 0;
 }

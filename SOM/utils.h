@@ -118,7 +118,7 @@ float get_distance(const vector<float> &vec1, const vector<float> &vec2)
 
 	for (int i = 0; i < vec2.size(); i++)
 	{
-		distance += (vec1[i] - vec2[i]) * (vec2[i] - vec2[i]);
+		distance += (vec1[i] - vec2[i]) * (vec1[i] - vec2[i]);
 	}
 
 	//return sqrt(distance);
@@ -129,26 +129,76 @@ vector<vector<float>> get_vizinhos(int x, int y, const vector<vector<vector<floa
 {
 	vector<vector<float>> vizinhos;
 
-	if (x == 0 && y == 0)
+	if (x == 0)
 	{
-		vizinhos.push_back(neurons[x][y+1]);
-		vizinhos.push_back(neurons[x+1][y]);
-		vizinhos.push_back(neurons[x][neurons.size() - 1]);
-		vizinhos.push_back(neurons[neurons.size() -1][y]);
-	}
-
-	for (int i = 0; i < neurons.size(); ++i)
-	{
-		for (int j = 0; j < neurons[0].size(); ++j)
+		if (y == 0)
 		{
-			if (i == 0)
-			{
-
-			}
+			vizinhos.push_back(neurons[x][y + 1]);//direita
+			vizinhos.push_back(neurons[x][neurons.size() - 1]);//esquerda
+			vizinhos.push_back(neurons[x + 1][y]);//abaixo
+			vizinhos.push_back(neurons[neurons.size() - 1][y]);//acima
 		}
+		else if (y == (neurons.size() - 1))
+		{
+			vizinhos.push_back(neurons[x][y - (neurons.size() - 1)]);//direita
+			vizinhos.push_back(neurons[x][y - 1]);//esquerda
+			vizinhos.push_back(neurons[x + 1][y]);//abaixo
+			vizinhos.push_back(neurons[neurons.size() - 1][y]);//acima
+		}
+		else
+		{
+			vizinhos.push_back(neurons[x][y + 1]);//direita
+			vizinhos.push_back(neurons[x][y - 1]);//esquerda
+			vizinhos.push_back(neurons[x + 1][y]);//abaixo
+			vizinhos.push_back(neurons[neurons.size() - 1][y]);//acima
+		}
+	}
+	else if (x == (neurons.size() - 1))
+	{
+		if (y == 0)
+		{
+			vizinhos.push_back(neurons[x][y + 1]);//direita
+			vizinhos.push_back(neurons[x][neurons.size() - 1]);//esquerda
+			vizinhos.push_back(neurons[x - (neurons.size() - 1)][y]);//abaixo
+			vizinhos.push_back(neurons[x - 1][y]);//acima
+		}
+		else if (y == (neurons.size() - 1))
+		{
+			vizinhos.push_back(neurons[x][y - (neurons.size() - 1)]);//direita
+			vizinhos.push_back(neurons[x][y-1]);//esquerda
+			vizinhos.push_back(neurons[x - (neurons.size() - 1)][y]);//abaixo
+			vizinhos.push_back(neurons[x - 1][y]);//acima
+		}
+		else
+		{
+			vizinhos.push_back(neurons[x][y + 1]);//direita
+			vizinhos.push_back(neurons[x][y - 1]);//esquerda
+			vizinhos.push_back(neurons[x - (neurons.size() - 1)][y]);//abaixo
+			vizinhos.push_back(neurons[x - 1][y]);//acima
+		}
+	}
+	else if (y == 0)
+	{
+		vizinhos.push_back(neurons[x][y + 1]);//direita
+		vizinhos.push_back(neurons[x][neurons.size() - 1]);//esquerda
+		vizinhos.push_back(neurons[x + 1][y]);//abaixo
+		vizinhos.push_back(neurons[x - 1][y]);//acima
+	}
+	else if (y == (neurons.size() - 1))
+	{
+		vizinhos.push_back(neurons[x][y - (neurons.size() - 1)]);//direita
+		vizinhos.push_back(neurons[x][y - 1]);//esquerda
+		vizinhos.push_back(neurons[x + 1][y]);//abaixo
+		vizinhos.push_back(neurons[x - 1][y]);//acima
+	}
+	else
+	{
+		vizinhos.push_back(neurons[x][y + 1]);
+		vizinhos.push_back(neurons[x][y - 1]);
+		vizinhos.push_back(neurons[x + 1][y]);
+		vizinhos.push_back(neurons[x - 1][y]);
 	}
 
 	return vizinhos;
-
 }
 #endif
