@@ -124,16 +124,6 @@ public:
 		time_constant = num_iteractions/log(map_radius);
 	}
 
-	
-
-	void ninv(int n, int &neuronio_altura, int &neuronio_largura)
-	{
-		if (n < qtd_neuronios)
-			return;
-		neuronio_largura = (n - 1) / map_x + 1;
-		neuronio_altura = n - (neuronio_largura - 1) * map_x;
-	}
-
 	bool epoch(const vector<vector<float>> &data)
 	{
 		//if(data[0].size() != constSizeOfInputVector)
@@ -225,7 +215,7 @@ public:
 		
 	}
 
-	vector<float> get_umat()
+	vector<vector<float>> get_umat()
 	{
 		vector<float> um;
 		vector<vector<vector<float>>> neurons(map_x, vector<vector<float>>(map_y, vector<float>(dimension_neurons)));
@@ -250,61 +240,102 @@ public:
 		{
 			for (int j = 0; j < map_y; ++j)
 			{
-				//int x_temp = (int)((i + 1) / 2);
-				//int y_temp = (int)((j + 1) / 2);
-
-				vector<vector<float>> vizinhos = get_vizinhos(i, j, neurons);
-
-				if (i < map_x)
+				if (j < (map_y - 1))
 				{
-					float dx = get_distance(neurons[i][j], vizinhos[2]);
-					U[2 * i ][2 * j] = dx;
+					float dx = get_distance(neurons[i][j], neurons[i][j + 1]);
+					U[2 * i][2 * j + 1] = dx;
+					um.push_back(dx);
 				}
 
-				
-
-				//vector<vector<float>> vizinhos = get_vizinhos(x_temp, y_temp , neurons);
-
-				/*if (is_par(x_temp))
+				if (i < (map_x - 1))
 				{
-					if (is_par(y_temp))
+					float dy = get_distance(neurons[i][j], neurons[i + 1][j]);
+					U[2 * i + 1][2 * j] = dy;
+					um.push_back(dy);
+				}
+
+				if (i < (map_x - 1) && j < (map_y - 1))
+				{
+					float dz1 = get_distance(neurons[i][j], neurons[i+1][j+1]);
+					float dz2 = get_distance(neurons[i+1][j], neurons[i][j+1]);
+					U[2 * i + 1][2 * j + 1] = (dz1 + dz2) / (2 * sqrt(2));
+				}
+			}
+
+			vector<float> a;
+
+			for (int i = 0; i < X; i += 2)
+			{
+				for (int j = 0; j < Y; j += 2)
+				{
+					if (j > 0 && i > 0 && i < (X - 1) && j < (Y - 1))
 					{
-						//vector<vector<float>> vizinhos = get_vizinhos((int)(((X + 1) / 2) - 1 - map_x), (int)(((Y + 1) / 2) - 1 - map_y), neurons);
-						float du = 0.0f;
-						um.push_back(du);
+						a.push_back(U[i][j-1]);
+						a.push_back(U[i][j+1]);
+						a.push_back(U[i-1][j]);
+						a.push_back(U[i+1][j]);
+					}
+					else if (i == 0 && j > 0 && j < (Y - 1))
+					{
+						a.push_back(U[i][j-1]);
+						a.push_back(U[i][j+1]);
+						a.push_back(U[i+1][j]);
+					}
+					else if (i == (X - 1) && j > 0 && j < (Y - 1))
+					{
+						a.push_back(U[i][j - 1]);
+						a.push_back(U[i][j + 1]);
+						a.push_back(U[i - 1][j]);
+					}
+					else if (j == 0 && i > 0 && i < (X - 1))
+					{
+						a.push_back(U[i][j + 1]);
+						a.push_back(U[i - 1][j]);
+						a.push_back(U[i + 1][j]);
+					}
+					else if (j == (Y - 1) && i > 0 && i < (X - 1))
+					{
+						a.push_back(U[i][j - 1]);
+						a.push_back(U[i - 1][j]);
+						a.push_back(U[i + 1][j]);
+					}
+					else if (j == 0 && i == 0)
+					{
+						a.push_back(U[i][j + 1]);
+						a.push_back(U[i + 1][j]);
+					}
+					else if (i == 0 && j > 0 && j < (Y - 1))
+					{
+						a.push_back(U[i][j]);
+						a.push_back(U[i][j]);
+						a.push_back(U[i][j]);
+					}
+					else if (j == (X - 1) && i == 0)
+					{
+						a.push_back(U[i][j - 1]);
+						a.push_back(U[i + 1][j]);
+					}
+					else if (j == 0 && i < (X - 1))
+					{
+						a.push_back(U[i][j + 1]);
+						a.push_back(U[i - 1][j]);
+					}
+					else if (j == (Y - 1) && i == (X - 1))
+					{
+						a.push_back(U[i][j - 1]);
+						a.push_back(U[i - 1][j]);
 					}
 					else
 					{
-						float dy = get_distance(neurons[x_temp][y_temp], vizinhos[0]);
-						um.push_back(dy);
+						a.push_back(0.0f);
 					}
-				}
-				else
-				{
-					if (is_par(y_temp))
-					{
-						float dx = get_distance(neurons[x_temp][y_temp], vizinhos[2]);
-						um.push_back(dx);
-					}
-					else
-					{
-						vector<vector<float>> vizinhos_temp;
-						if (x_temp == (map_x - 1))
-						{
-							vizinhos_temp = get_vizinhos(x_temp - (map_x - 1), y_temp, neurons);
-						}
-						else
-							vizinhos_temp = get_vizinhos(x_temp + 1, y_temp, neurons);
 
-						float dxy = (1 / 2 * sqrt(2))*(get_distance(neurons[x_temp][y_temp], vizinhos_temp[0]) +
-														get_distance(vizinhos[0], vizinhos[2]));
-						um.push_back(dxy);
-					}
-				}*/
+					U[i][j] = calculate_median(a);
+				}
 			}
 		}
 
-		return um;
+		return U;
 	}
 
 

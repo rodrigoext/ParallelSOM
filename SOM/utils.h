@@ -10,8 +10,11 @@
 #include <random>
 
 #include "node.h"
+#include "som.h"
 
 using namespace std;
+
+#define dir "C:\\Users\\Rodrigo\\Documents\\Visual Studio 2013\\Projects\\TCC_DEV\\SOM\\Debug\\"
 //----------------------------------------------------------------------------
 //	some random number functions.
 //----------------------------------------------------------------------------
@@ -121,9 +124,155 @@ float get_distance(const vector<float> &vec1, const vector<float> &vec2)
 		distance += (vec1[i] - vec2[i]) * (vec1[i] - vec2[i]);
 	}
 
-	//return sqrt(distance);
-	return distance;
+	return sqrt(distance);
+	//return distance;
 }
+
+float calculate_median(vector<float> &data)
+{
+	float median = 0.0f;
+
+	size_t size = data.size();
+
+	sort(data.begin(), data.end());
+
+	if (size % 2 == 0)
+	{
+		median = (data[size / 2 - 1] + data[size / 2]) / 2;
+	}
+	else
+	{
+		median = data[size / 2];
+	}
+
+	/*for (int i = 0; i < in.size(); ++i)
+	{
+		temp += in[i];
+	}
+
+	temp = temp / in.size();
+*/
+	return median;
+}
+
+template<class TYPE>
+void print_weights(int msize, TYPE & som)
+{
+	
+
+	ofstream pesos_neuronios;
+	pesos_neuronios.open(*dir+"pesos_neuronios.csv");
+
+	for (int i = 0; i < msize*msize; ++i)
+	{
+		vector<float> weigths = som->SOM[i].get_weigths();
+
+		for (int j = 0; j < weigths.size(); ++j)
+		{
+			if (j == (weigths.size() - 1))
+				pesos_neuronios << weigths[j];
+			else
+				pesos_neuronios << weigths[j] << ",";
+		}
+
+		pesos_neuronios << endl;
+	}
+
+	pesos_neuronios.close();
+}
+
+template<class TYPE>
+void print_hits(int msize, TYPE & som)
+{
+	//Imprime Hits
+	ofstream hits;
+	hits.open("hits.csv");
+
+	vector<Node> neurons = som->SOM;
+
+	int temp = 0;
+
+	for (int i = 0; i < msize; ++i)
+	{
+		for (int j = 0; j < msize; ++j)
+		{
+			if (j == (msize - 1))
+				hits << neurons[temp].count_wins;
+			else
+				hits << neurons[temp].count_wins << ",";
+
+			temp++;
+		}
+
+		hits << endl;
+	}
+
+	hits.close();
+}
+
+template<class TYPE>
+void print_best_data_neuron(int msize, TYPE & som, vector<vector<float>> &data_set)
+{
+	///Classsssssssssssss
+	ofstream cl;
+	cl.open("class.csv");
+
+	vector<int> cla = som->get_umat_simples(data_set);
+
+	for (int i = 0; i < cla.size(); ++i)
+	{
+		cl << cla[i] << endl;
+	}
+
+	cl.close();
+}
+
+void print_data_normalized(vector<vector<float>> &data_set)
+{
+
+	ofstream d_write;
+	d_write.open("data_set_norm_cplusplus.csv");
+	for (int i = 0; i < data_set.size(); ++i)
+	{
+		for (int j = 0; j < data_set[i].size(); ++j)
+		{
+			if (j == (data_set[i].size() - 1))
+				d_write << data_set[i][j];
+			else
+				d_write << data_set[i][j] << ",";
+		}
+		d_write << endl;
+
+	}
+
+	d_write.close();
+}
+
+template<class TYPE>
+void print_umat(int msize, TYPE & som)
+{
+	ofstream umat;
+	umat.open("umat.csv");
+
+	vector<vector<float>> umm = som->get_umat();
+
+	for (int i = 0; i < umm.size(); ++i)
+	{
+		for (int j = 0; j < umm[0].size(); ++j)
+		{
+			if (j == (umm[0].size() - 1))
+				umat << umm[i][j];
+			else
+				umat << umm[i][j] << ",";
+		}
+
+		umat << endl;
+	}
+
+	umat.close();
+}
+
+
 
 vector<vector<float>> get_vizinhos(int x, int y, const vector<vector<vector<float>>> &neurons)
 {

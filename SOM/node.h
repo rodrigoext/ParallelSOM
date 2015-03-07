@@ -40,7 +40,6 @@ public:
 		x = left + (float)(right - left)/2;
 		y = top + (float)(bottom - top)/2;
 		count_wins = 0;
-		//id = id_node;
 	}
 
 	float get_distance(const vector<float> &input_vector)
@@ -52,8 +51,7 @@ public:
 			distance += (input_vector[i] - weights[i]) * (input_vector[i] - weights[i]);
 		}
 
-		//return sqrt(distance);
-		return distance;
+		return sqrt(distance);
 	}
 
 	void adjust_weights(const vector<float> &target, const float learning_rate, const float influence)
