@@ -21,6 +21,7 @@ using std::ifstream;
 using namespace std;
 using namespace Eigen;
 
+typedef Matrix<double, Dynamic, Dynamic> data_set_eigen;
 
 MatrixXf read_data_eigen(const char * file_name)
 {
@@ -37,7 +38,7 @@ MatrixXf read_data_eigen(const char * file_name)
 	{
 
 		int lines = std::count(std::istreambuf_iterator<char>(infile),
-								std:: istreambuf_iterator<char>(), '\n');
+			std::istreambuf_iterator<char>(), '\n');
 
 		while (infile)
 		{
@@ -68,9 +69,9 @@ MatrixXf read_data_eigen(const char * file_name)
 
 				record.push_back(temp);
 
-//				data_float()
+				//				data_float()
 
-	//			cols += 1;
+				//			cols += 1;
 			}
 
 			lines += 1;
@@ -80,6 +81,24 @@ MatrixXf read_data_eigen(const char * file_name)
 	return data_float;
 }
 
+void load_data_set(const char * file_name)
+{
+	ifstream infile;
+	string line;
+
+	infile.open(file_name);
+
+	cerr << "Reading data..." << endl;
+
+	int num_lines = 0;
+
+	while (getline(infile, line))
+	{
+		++num_lines;
+	}
+
+	cerr << "Numeber of lines: " << num_lines << endl;
+}
 
 vector<vector<float>> read_data(const char * file_name)
 {
@@ -91,6 +110,8 @@ vector<vector<float>> read_data(const char * file_name)
 	infile.open(file_name);
 
 	cerr << "Reading data..." << endl;
+
+	int i, j = 0;
 
 	if (infile.is_open())
 	{
@@ -117,6 +138,7 @@ vector<vector<float>> read_data(const char * file_name)
 				iss >> temp;
 
 				record.push_back(temp);
+
 			}
 
 			data_float.push_back(record);
@@ -145,18 +167,18 @@ void show_clustered(vector<vector<float>> data, vector<int> clustering, int num_
 	for (int k = 0; k < num_clusters; ++k)
 	{
 		cout << "=======================" << endl;
-		for(int i = 0; i < data.size(); ++i)
+		for (int i = 0; i < data.size(); ++i)
 		{
 			int cluster_id = clustering[i];
-			
-			if(cluster_id != k)
+
+			if (cluster_id != k)
 				continue;
 
 			cout << i << "  ";
 
-			for(int j = 0; j < data[i].size(); ++j)
+			for (int j = 0; j < data[i].size(); ++j)
 			{
-				if(data[i][j] >= 0.0)
+				if (data[i][j] >= 0.0)
 					cout << "  ";
 				cout << data[i][j] << "  ";
 			}
@@ -170,25 +192,29 @@ void show_clustered(vector<vector<float>> data, vector<int> clustering, int num_
 int main()
 {
 	vector<vector<float>> data_set = read_data("data_seis.csv");
-	
+
+	//load_data_set("data_seis.csv");
+
 	mapminmax(data_set);
 
 	data_set = transpose(data_set);
-	
+
 	print_data_normalized(data_set);
 
- 	Som* som = new Som();
-	
+	Som* som = new Som();
+
 
 	//KMeans* km = new KMeans();
-	
+
 	//vector<int> result =  km->cluster(data_set, 3);
 
 	//cout << endl;
 
 	//show_clustered(data_set_test, result, 3, 0);
 
-	int msize = 5;
+	cerr << "Creating Map..." << endl;
+
+	int msize = 100;
 
 	som->create(msize, msize, msize, msize, 1000, data_set[0].size());
 
@@ -199,16 +225,17 @@ int main()
 	while (!som->finished_training())
 	{
 		som->epoch(data_set);
-		count ++;
+		count++;
 	}
-	
-	print_weights(msize, som);
-	print_hits(msize, som);
+
+	cerr << "Printing results..." << endl;
+	//print_weights(msize, som);
+	//print_hits(msize, som);
 	print_best_data_neuron(msize, som, data_set);
-	print_umat(msize, som);
+	//print_umat(msize, som);
 
 	cout << "Num Iterations: " << count << endl;
 	cout << "Learning Rate: " << som->get_learning_rate() << endl;
-	
-    return 0;
+
+	return 0;
 }

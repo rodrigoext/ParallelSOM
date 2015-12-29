@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <Eigen/Dense>
+#include <omp.h>
 
 
 #include "constants.h"
@@ -44,6 +45,8 @@ private:
 		Node* winner = NULL;
 
 		float lowest_distance = 999999;
+		
+		int size = SOM.size();
 
 		for (int n = 0; n < SOM.size(); n++)
 		{
@@ -54,6 +57,39 @@ private:
 				lowest_distance = dist;
 
 				winner = &SOM[n];
+			}
+		}
+
+		//winner->count_win();
+
+		return winner;
+	}
+
+	Node* find_best_matching_node_parallel(const vector<float> &vec)
+	{
+		Node* winner = NULL;
+
+		float lowest_distance = 999999;
+
+		int size = SOM.size();
+		int job_thread = (int) size / omp_get_max_threads();
+
+		#pragma omp parallel
+		{
+			for (int n = omp_get_thread_num(); n < job_thread * omp_get_thread_num(); n++)
+			{
+				float dist = SOM[n].get_distance(vec);
+
+				if (dist < lowest_distance)
+				{
+					lowest_distance = dist;
+					
+					//Critial
+					#pragma critical
+					{
+						winner = &SOM[n];
+					}
+				}
 			}
 		}
 
@@ -99,13 +135,14 @@ public:
 
 		int id_node = 1;
 		//create all nodes
+
+		int job_cells_up = (int) cells_up / omp_get_max_threads();
+		int job_cells_across = (int) cells_across / omp_get_max_threads();
+
 		for (int i = 0; i < cells_up; i++)
 		{
-			
 			for (int j = 0; j < cells_across; j++)
 			{
-				
-
 				SOM.push_back(
 					Node(j * cell_width, //left
 					(j+1) * cell_width,	 //right
@@ -114,7 +151,6 @@ public:
 					dimension, //dimension of weights
 					id_node) //id of nodes
 					);
-
 				id_node++;
 			}
 		}
@@ -136,7 +172,7 @@ public:
 		{
 			int this_vector = RandInt(0, data.size()-1);
 
-			winning_node = find_best_matching_node(data[this_vector]);
+			winning_node = find_best_matching_node_parallel(data[this_vector]);
 
 			winning_node->count_win();
 
@@ -170,6 +206,60 @@ public:
 
 		}
 		
+		else
+		{
+			done = true;
+		}
+
+		return true;
+	}
+
+	bool epoch_parallel(const vector<vector<float>> &data)
+	{
+		//if(data[0].size() != constSizeOfInputVector)
+		//	return false;
+
+		if (done)
+			return true;
+
+		if (--num_iteractions)
+		{
+			int this_vector = RandInt(0, data.size() - 1);
+
+			winning_node = find_best_matching_node(data[this_vector]);
+
+			winning_node->count_win();
+
+			//			result.push_back(winning_node->id);
+
+			neighbourhood_radius = map_radius * exp(-(float)iteraction_count / time_constant);
+
+			for (int n = 0; n < SOM.size(); n++)
+			{
+				//calculate the Euclidean distance (squared) to this node from the
+				//BMU
+				float dist_to_node_sq = (winning_node->x - SOM[n].X()) *
+					(winning_node->x - SOM[n].X()) +
+					(winning_node->y - SOM[n].Y()) *
+					(winning_node->y - SOM[n].Y());
+
+				float width_sq = neighbourhood_radius * neighbourhood_radius;
+
+				if (dist_to_node_sq < width_sq)
+				{
+					influence = exp(-(dist_to_node_sq) / (2 * width_sq));
+
+					SOM[n].adjust_weights(data[this_vector], learning_rate, influence);
+				}
+			}//next node
+
+			//reduce learning rate
+			learning_rate = constStartLearningRate * exp(-(float)iteraction_count / num_iteractions);
+
+			++iteraction_count;
+
+		}
+
 		else
 		{
 			done = true;

@@ -20,7 +20,7 @@ using namespace std;
 //----------------------------------------------------------------------------
 
 //returns a random integer between x and y
-inline int	  RandInt(int x,int y) {return rand()%(y-x+1)+x;}
+inline int	  RandInt(int x, int y) { return rand() % (y - x + 1) + x; }
 
 //returns a random float between zero and 1
 inline float RandFloat()		   {
@@ -38,7 +38,7 @@ inline float RandFloat()		   {
 //returns a random bool
 inline bool   RandBool()
 {
-	if (RandInt(0,1)) return true;
+	if (RandInt(0, 1)) return true;
 
 	else return false;
 }
@@ -61,11 +61,11 @@ inline int min_index(vector<float> distances)
 
 inline float dist(vector<float> tuple, vector<float> mean)
 {
-    // Euclidean distance between two vectors for UpdateClustering()
-    // consider alternatives such as Manhattan distance
-    float sumSquaredDiffs = 0.0;
+	// Euclidean distance between two vectors for UpdateClustering()
+	// consider alternatives such as Manhattan distance
+	float sumSquaredDiffs = 0.0;
 
-    for (int j = 0; j < tuple.size(); ++j)
+	for (int j = 0; j < tuple.size(); ++j)
 		sumSquaredDiffs += powf((tuple[j] - mean[j]), 2.0f);
 	return sqrtf(sumSquaredDiffs);
 }
@@ -95,7 +95,7 @@ void mapminmax(vector<vector<float>> &data)
 
 vector<vector<float>> transpose(vector<vector<float>> &data)
 {
-	vector<vector<float>> new_data(data[0].size(),vector<float>(data.size()));
+	vector<vector<float>> new_data(data[0].size(), vector<float>(data.size()));
 
 	for (int i = 0; i < data.size(); ++i)
 	{
@@ -147,21 +147,21 @@ float calculate_median(vector<float> &data)
 
 	/*for (int i = 0; i < in.size(); ++i)
 	{
-		temp += in[i];
+	temp += in[i];
 	}
 
 	temp = temp / in.size();
-*/
+	*/
 	return median;
 }
 
 template<class TYPE>
 void print_weights(int msize, TYPE & som)
 {
-	
+
 
 	ofstream pesos_neuronios;
-	pesos_neuronios.open(*dir+"pesos_neuronios.csv");
+	pesos_neuronios.open(*dir + "pesos_neuronios.csv");
 
 	for (int i = 0; i < msize*msize; ++i)
 	{
@@ -314,7 +314,7 @@ vector<vector<float>> get_vizinhos(int x, int y, const vector<vector<vector<floa
 		else if (y == (neurons.size() - 1))
 		{
 			vizinhos.push_back(neurons[x][y - (neurons.size() - 1)]);//direita
-			vizinhos.push_back(neurons[x][y-1]);//esquerda
+			vizinhos.push_back(neurons[x][y - 1]);//esquerda
 			vizinhos.push_back(neurons[x - (neurons.size() - 1)][y]);//abaixo
 			vizinhos.push_back(neurons[x - 1][y]);//acima
 		}
