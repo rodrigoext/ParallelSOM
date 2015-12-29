@@ -191,7 +191,7 @@ void show_clustered(vector<vector<float>> data, vector<int> clustering, int num_
 
 int main()
 {
-	vector<vector<float>> data_set = read_data("data_seis.csv");
+	vector<vector<float>> data_set = read_data("../SOM/data/data_seis.csv");
 
 	//load_data_set("data_seis.csv");
 
